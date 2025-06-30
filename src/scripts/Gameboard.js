@@ -48,6 +48,10 @@ class Gameboard {
   get board() {
     return JSON.stringify(this.#board);
   }
+
+  get attacks() {
+    return JSON.stringify(this.#attacks);
+  }
 }
 
 export default Gameboard;
