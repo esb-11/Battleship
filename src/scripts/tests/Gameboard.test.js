@@ -32,3 +32,15 @@ test("Ships cannot surpass board limit", () => {
   expect(() => gameboard.placeShip(0, 8, 3)).toThrow();
   expect(() => gameboard.placeShip(11, 7, 3)).toThrow();
 });
+
+test("Detects when all ships sunk", () => {
+  const gameboard = new Gameboard();
+
+  gameboard.placeShip(0, 0, 1);
+  expect(gameboard.isGameLost()).toBeFalsy();
+
+
+  gameboard.receiveAttack(0, 0);
+  expect(gameboard.isGameLost()).toBeTruthy();
+});
+
