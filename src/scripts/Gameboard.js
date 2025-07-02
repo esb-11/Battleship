@@ -45,6 +45,10 @@ class Gameboard {
     this.#attacks.push([x,y]);
   }
 
+  isGameLost() {
+    return this.#ships.every((ship) => ship.isSunk());
+  }
+
   get board() {
     return JSON.stringify(this.#board);
   }
