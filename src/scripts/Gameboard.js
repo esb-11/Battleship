@@ -5,9 +5,10 @@ class Gameboard {
 
   #board;
   #attacks;
-  #ships
+  #ships;
 
   constructor() {
+    this.#ships = [];
     this.#board = [];
     this.#attacks = [];
     for (let i = 0; i < 10; i++) {
