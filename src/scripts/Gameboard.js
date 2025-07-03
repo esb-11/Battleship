@@ -1,62 +1,104 @@
-import Ship from "./Ship.js";
+// Gameboard consists of a 10 X 10 grid
 
-class Gameboard {
-  static BOARD_SIZE = 10;
+const Gameboard = (() => {
+  const BOARD_SIZE = 10;
 
-  #board;
-  #attacks;
-  #ships;
+  function createBoard() {
+    const ships = [];
+    const board = generateBoard();
 
-  constructor() {
-    this.#ships = [];
-    this.#board = [];
-    this.#attacks = [];
-    for (let i = 0; i < 10; i++) {
-      this.#board.push([]);
-      for (let j = 0; j < 10; j++) {
-        this.#board[i].push(null);
+    function placeX(ship, coord) {
+      // Place a ship along the X axis (horizontally)
+      const [x, y] = coord;
+
+      if (!isCoordValid(coord)) {
+        throw new Error("Invalid coordinate!");
+      } else if (board[x][y]) {
+        throw new Error("Coordinates are not empty!");
+      }
+
+      for (let i = 0; i < ship.length; i++) {
+        board[x][y + i] = ship;
+      }
+
+      ships.push(ship);
+    }
+
+    function placeY(ship, coord) {
+      // Place a ship along the Y axis (vertically)
+      const [x, y] = coord;
+
+      if (!isCoordValid(coord)) {
+        throw new Error("Invalid coordinate!");
+      } else if (board[x][y]) {
+        throw new Error("Coordinates are not empty!");
+      }
+
+      for (let i = 0; i < ship.length; i++) {
+        board[x + i][y] = ship;
+      }
+
+      ships.push(ship);
+    }
+
+    function receiveAttack(coord) {
+      if (!isCoordValid(coord)) {
+        throw new Error("Invalid coordinate!");
+      }
+
+      const [x, y] = coord;
+      const gridCell = board[x][y];
+
+      if (gridCell == "hit" || gridCell == "miss") {
+        throw new Error("Coordiante already attacked!");
+      } else if (gridCell) {
+        gridCell.hit();
+        board[x][y] = "hit";
+      } else {
+        board[x][y] = "miss";
       }
     }
-  }
 
-  placeShip(x, y, length) {
-    // check if coordinates are within the board
-    if (y + length > Gameboard.BOARD_SIZE || x >= Gameboard.BOARD_SIZE)
-      throw new Error("The ships is out of the board");
-
-    // check if coordinates are vacant
-    for (let i = 0; i < length; i++) {
-      if (this.#board[x][y + i]) throw new Error("Space already occupied");
+    function isEmpty() {
+      // The game is lost when all ships have been sunk
+      return ships.every((ship) => {
+        return ship.isSunk();
+      });
     }
 
-    const ship = new Ship(length);
-
-    for (let i = 0; i < length; i++) {
-      this.#board[x][y + i] = ship;
+    function getBoard() {
+      return JSON.stringify(board);
     }
 
-    this.#ships.push(ship);
+    return { placeX, placeY, receiveAttack, isEmpty, getBoard };
   }
 
-  receiveAttack(x, y) {
-    const spaceAttacked = this.#board[x][y];
+  function generateBoard() {
+    // make a 2d array to represent a 10 X 10 grid,
+    // fill it with null elements to represent empty spaces
+    const board = [];
 
-    if (spaceAttacked) spaceAttacked.hit();
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      const row = [];
+      for (let j = 0; j < BOARD_SIZE; j++) {
+        row.push(null);
+      }
 
-    this.#attacks.push([x,y]);
+      board.push(row);
+    }
+
+    return board;
   }
 
-  isGameLost() {
-    return this.#ships.every((ship) => ship.isSunk());
+  function isCoordValid(coord, length = 1) {
+    const [x, y] = coord;
+
+    return (
+      x + length <= BOARD_SIZE && y + length <= BOARD_SIZE && x >= 0 && y >= 0
+    );
   }
 
-  get board() {
-    return JSON.stringify(this.#board);
-  }
-
-  get attacks() {
-    return JSON.stringify(this.#attacks);
-  }
-}
+  return { createBoard };
+})();
 
 export default Gameboard;

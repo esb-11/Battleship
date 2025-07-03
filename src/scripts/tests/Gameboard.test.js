@@ -1,46 +1,74 @@
 import Gameboard from "../Gameboard.js";
+import Ship from "../Ship.js";
 
-test("Initial gameboard is empty", () => {
-  const gameboard = new Gameboard();
-  const board = JSON.parse(gameboard.board);
+test("Can place ships horizontally", () => {
+  const testBoard = Gameboard.createBoard();
+  const ship = new Ship(3);
 
-  expect(board.length).toBe(10);
-  board.every((row) => expect(row.length).toBe(10));
+  testBoard.placeX(ship, [0, 0]);
+  const board = JSON.parse(testBoard.getBoard());
+
+  expect(board[0][0]).toBeTruthy();
+  expect(board[0][1]).toBeTruthy();
+  expect(board[0][2]).toBeTruthy();
+  expect(board[0][3]).toBeFalsy();
+  expect(board[1][0]).toBeFalsy();
 });
 
-test("Can place ships at specific coordinates", () => {
-  const gameboard = new Gameboard();
+test("Can place ships vertically", () => {
+  const testBoard = Gameboard.createBoard();
+  const ship = new Ship(3);
 
-  gameboard.placeShip(0, 0, 5);
+  testBoard.placeY(ship, [0, 0]);
+  const board = JSON.parse(testBoard.getBoard());
 
-  let board = JSON.parse(gameboard.board);
-  for (let i = 0; i < 5; i++) {
-    expect(board[0][i]).toBeTruthy();
-  }
+  expect(board[0][0]).toBeTruthy();
+  expect(board[1][0]).toBeTruthy();
+  expect(board[2][0]).toBeTruthy();
+  expect(board[3][0]).toBeFalsy();
+  expect(board[0][1]).toBeFalsy();
 });
 
 test("Ships cannot overlap", () => {
-  const gameboard = new Gameboard();
+  const board = Gameboard.createBoard();
+  const ship1 = new Ship(3);
+  const ship2 = new Ship(3);
 
-  gameboard.placeShip(0, 0, 5);
-  expect(() => gameboard.placeShip(0, 0, 1)).toThrow();
+  board.placeY(ship1, [3, 3]);
+  expect(() => board.placeX(ship2, [3, 3])).toThrow();
+  expect(() => board.placeY(ship2, [3, 3])).toThrow();
 });
 
 test("Ships cannot surpass board limit", () => {
-  const gameboard = new Gameboard();
+  const board = Gameboard.createBoard();
+  const ship1 = new Ship(3);
 
-  expect(() => gameboard.placeShip(0, 8, 3)).toThrow();
-  expect(() => gameboard.placeShip(11, 7, 3)).toThrow();
+  expect(() => board.placeX(ship1, [10, 10])).toThrow();
+  expect(() => board.placeX(ship1, [0, 10])).toThrow();
+  expect(() => board.placeX(ship1, [10, 0])).toThrow();
 });
 
-test("Detects when all ships sunk", () => {
-  const gameboard = new Gameboard();
+test("Can receive attacks", () => {
+  const testBoard = Gameboard.createBoard();
+  const ship = new Ship(3);
 
-  gameboard.placeShip(0, 0, 1);
-  expect(gameboard.isGameLost()).toBeFalsy();
+  testBoard.placeX(ship, [0, 0]);
+  let board = JSON.parse(testBoard.getBoard());
+  expect(board[0][0]).toEqual({});
 
-
-  gameboard.receiveAttack(0, 0);
-  expect(gameboard.isGameLost()).toBeTruthy();
+  testBoard.receiveAttack([0, 0]);
+  board = JSON.parse(testBoard.getBoard());
+  expect(board[0][0]).toBe("hit");
 });
 
+test("Detects when all ships have been sunk", () => {
+  const testBoard = Gameboard.createBoard();
+  const ship = new Ship(3);
+
+  testBoard.placeX(ship, [0, 0]);
+  testBoard.receiveAttack([0, 0]);
+  testBoard.receiveAttack([0, 1]);
+  expect(testBoard.isEmpty()).toBeFalsy();
+  testBoard.receiveAttack([0, 2]);
+  expect(testBoard.isEmpty()).toBeTruthy();
+});
