@@ -8,6 +8,7 @@ class Ship {
   };
   #hits;
   #length;
+  #name;
 
   constructor(name) {
     if (!SHIPS_TYPES[name]) {
@@ -15,6 +16,7 @@ class Ship {
     }
     this.#length = SHIPS_TYPES[name];
     this.#hits = 0;
+    this.#name = name;
   }
 
   hit() {
@@ -32,6 +34,10 @@ class Ship {
 
   get length() {
     return this.#length;
+  }
+
+  get name() {
+    return this.#name.slice();
   }
 }
 
