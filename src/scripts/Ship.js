@@ -11,10 +11,10 @@ class Ship {
   #name;
 
   constructor(name) {
-    if (!SHIPS_TYPES[name]) {
+    if (!Ship.SHIPS_TYPES[name]) {
       throw new Error("Invalid ship type!");
     }
-    this.#length = SHIPS_TYPES[name];
+    this.#length = Ship.SHIPS_TYPES[name];
     this.#hits = 0;
     this.#name = name;
   }
