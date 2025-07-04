@@ -1,4 +1,5 @@
 // Gameboard consists of a 10 X 10 grid
+// Ships cannot be placed near another ship
 
 const Gameboard = (() => {
   const BOARD_SIZE = 10;
@@ -9,13 +10,8 @@ const Gameboard = (() => {
 
     function placeX(ship, coord) {
       // Place a ship along the X axis (horizontally)
+      canPlaceX(coord, ship.length);
       const [x, y] = coord;
-
-      if (!isCoordValid(coord)) {
-        throw new Error("Invalid coordinate!");
-      } else if (board[x][y]) {
-        throw new Error("Coordinates are not empty!");
-      }
 
       for (let i = 0; i < ship.length; i++) {
         board[x][y + i] = ship;
@@ -26,13 +22,9 @@ const Gameboard = (() => {
 
     function placeY(ship, coord) {
       // Place a ship along the Y axis (vertically)
-      const [x, y] = coord;
+      canPlaceY(coord, ship.length);
 
-      if (!isCoordValid(coord)) {
-        throw new Error("Invalid coordinate!");
-      } else if (board[x][y]) {
-        throw new Error("Coordinates are not empty!");
-      }
+      const [x, y] = coord;
 
       for (let i = 0; i < ship.length; i++) {
         board[x + i][y] = ship;
@@ -68,6 +60,62 @@ const Gameboard = (() => {
 
     function getBoard() {
       return JSON.stringify(board);
+    }
+
+    function canPlaceX(coord, length = 0) {
+      const [x, y] = coord;
+
+      if (!isCoordValid(coord)) {
+        throw new Error("Invalid coordinate!");
+      } else if (board[x][y]) {
+        throw new Error("Coordinates are not empty!");
+      } else {
+        const start = x - 1;
+        const end = x + length + 2;
+
+        for (
+          let i = start < 0 ? 0 : start;
+          i < (end > BOARD_SIZE ? BOARD_SIZE : end);
+          i++
+        ) {
+          if (
+            (x - 1 >= 0 && board[x - 1][i]) ||
+            (x + 1 < BOARD_SIZE && board[x + 1][i])
+          ) {
+            throw new Error("Ships cannot be placed close to others ships!");
+          }
+        }
+      }
+    }
+
+    function canPlaceY(coord, length) {
+      const [x, y] = coord;
+
+      if (!isCoordValid(coord)) {
+        throw new Error("Invalid coordinate!");
+      } else if (board[x][y]) {
+        throw new Error("Coordinates are not empty!");
+      } else {
+        const start = y - 1;
+        const end = y + length + 2;
+
+        if ((x - 1 >= 0 && board[x-1][y]) || (x + 1 < BOARD_SIZE && board[x+1][y])) {
+            throw new Error("Ships cannot be placed close to others ships!");
+        }
+
+        for (
+          let i = start < 0 ? 0 : start;
+          i < (end > BOARD_SIZE ? BOARD_SIZE : end);
+          i++
+        ) {
+          if (
+            (y - 1 >= 0 && board[i][y - 1]) ||
+            (y + 1 < BOARD_SIZE && board[i][y + 1])
+          ) {
+            throw new Error("Ships cannot be placed close to others ships!");
+          }
+        }
+      }
     }
 
     return { placeX, placeY, receiveAttack, isEmpty, getBoard };
