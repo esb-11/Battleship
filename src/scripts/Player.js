@@ -2,7 +2,13 @@ import Ship from "./Ship.js";
 import Gameboard from "./Gameboard.js";
 
 const Player = (() => {
-  const STARTING_FLEET = ["carrier", "battleship", "destroyer", "submarine", "patrol boat"];
+  const STARTING_FLEET = [
+    "carrier",
+    "battleship",
+    "destroyer",
+    "submarine",
+    "patrol boat",
+  ];
 
   function createPlayer(name = "Player") {
     const board = Gameboard.createBoard();
@@ -19,8 +25,12 @@ const Player = (() => {
     const name = "Computer";
     const board = Gameboard.createBoard();
     fillBoard(board);
-
-    return { name, board }
+    
+    function getName() {
+      return name.slice();
+    }
+    
+    return { getName, board };
   }
 
   function fillBoard(board) {
