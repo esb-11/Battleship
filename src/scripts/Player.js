@@ -8,7 +8,11 @@ const Player = (() => {
     const board = Gameboard.createBoard();
     fillBoard(board);
 
-    return { name, board };
+    function getName() {
+      return name.slice();
+    }
+
+    return { getName, board };
   }
 
   function createCPU() {
