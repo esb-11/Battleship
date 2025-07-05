@@ -146,7 +146,7 @@ const Gameboard = (() => {
     );
   }
 
-  return { createBoard };
+  return { createBoard, isCoordValid };
 })();
 
 export default Gameboard;
