@@ -6,13 +6,18 @@ const Player = (() => {
 
   function createPlayer(name = "Player") {
     const board = Gameboard.createBoard();
-
     fillBoard(board);
 
     return { name, board };
   }
 
-  function createCPU() {}
+  function createCPU() {
+    const name = "Computer";
+    const board = Gameboard.createBoard();
+    fillBoard(board);
+
+    return { name, board }
+  }
 
   function fillBoard(board) {
     let index = 0;
