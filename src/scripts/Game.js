@@ -1,27 +1,35 @@
 import Gameboard from "./Gameboard.js";
 import Player from "./Player.js";
+import PubSub from "./PubSub.js";
 
 const Game = (() => {
+  PubSub.on("init", init);
+
   const player = Player.createPlayer();
   const computer = Player.createCPU();
-  let currentPlayer = player;
 
-  function attack(coord) {
+  function init() {
+    PubSub.emit("playerBoardChanged", player.board.getBoard());
+    PubSub.emit("computerBoardChanged", computer.board.getBoard());
+  }
+
+  function playerAttack(coord) {
     if (!Gameboard.isCoordValid(coord)) {
       return;
     }
-    const opponent = currentPlayer == player ? computer : player;
-    opponent.board.receiveAttack(coord);
-    currentPlayer = opponent;
+    computer.board.receiveAttack(coord);
+    PubSub.emit("playerBoardChanged", player.board.getBoard());
+  }
+
+  function computerAttack() {
+    const coord = -computer.makeAtack();
+    player.board.receiveAttack(coord);
+    PubSub.emit("computerBoardChanged", computer.board.getBoard());
   }
 
   function reset() {}
 
-  function getCurrentPlayer() {
-    return currentPlayer.getName();
-  }
-  
-  return { attack, reset, getCurrentPlayer };
+  return { playerAttack, computerAttack, reset };
 })();
 
 export default Game;
