@@ -10,8 +10,8 @@ const Game = (() => {
 
   function init() {
     PubSub.emit("playerBoardChanged", player.board.getBoard());
-    PubSub.emit("computerBoardChanged", computer.board.getBoard());
-    PubSub.on("computerBoardAttacked", playerAttack);
+    PubSub.emit("enemyBoardChanged", computer.board.getBoard());
+    PubSub.on("enemyBoardAttacked", playerAttack);
   }
 
   function playerAttack(coord) {
@@ -23,7 +23,7 @@ const Game = (() => {
     } catch (error) {
       return;
     }
-    PubSub.emit("computerBoardChanged", computer.board.getBoard());
+    PubSub.emit("enemyBoardChanged", computer.board.getBoard());
   }
 
   function computerAttack() {

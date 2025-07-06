@@ -2,7 +2,7 @@ import PubSub from "./PubSub.js";
 
 const Render = (() => {
   PubSub.on("playerBoardChanged", updatePlayerBoard);
-  PubSub.on("computerBoardChanged", updateComputerBoard);
+  PubSub.on("enemyBoardChanged", updateEnemyBoard);
 
   const leftBoard = document.querySelector("#left-board");
   const rightBoard = document.querySelector("#right-board");
@@ -25,7 +25,7 @@ const Render = (() => {
     leftBoard.innerHTML = boardElement.innerHTML;
   }
 
-  function updateComputerBoard(board) {
+  function updateEnemyBoard(board) {
     const boardElement = renderBoard(board);
     rightBoard.innerHTML = boardElement.innerHTML;
   }
@@ -70,7 +70,7 @@ const Render = (() => {
     const cell = event.target;
     const x = parseInt(cell.dataset.x);
     const y = parseInt(cell.dataset.y);
-    PubSub.emit("computerBoardAttacked", [x, y]);
+    PubSub.emit("enemyBoardAttacked", [x, y]);
   }
 })();
 
