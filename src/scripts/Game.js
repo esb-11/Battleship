@@ -11,20 +11,25 @@ const Game = (() => {
   function init() {
     PubSub.emit("playerBoardChanged", player.board.getBoard());
     PubSub.emit("computerBoardChanged", computer.board.getBoard());
+    PubSub.on("computerBoardAttacked", playerAttack);
   }
 
   function playerAttack(coord) {
     if (!Gameboard.isCoordValid(coord)) {
       return;
     }
-    computer.board.receiveAttack(coord);
-    PubSub.emit("playerBoardChanged", player.board.getBoard());
+    try {
+      computer.board.receiveAttack(coord);
+    } catch (error) {
+      return;
+    }
+    PubSub.emit("computerBoardChanged", computer.board.getBoard());
   }
 
   function computerAttack() {
     const coord = computer.makeAtack();
     player.board.receiveAttack(coord);
-    PubSub.emit("computerBoardChanged", computer.board.getBoard());
+    PubSub.emit("playerBoardChanged", player.board.getBoard());
   }
 
   function reset() {}
