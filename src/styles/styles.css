@@ -5,4 +5,27 @@ body {
   height: 100%;
 }
 
+.board {
+  width: 480px;
+  height: 480px;
+}
 
+.grid-row {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+}
+
+.grid-cell {
+  height: 32px;
+  width: 32px;
+  margin: 2px;
+  background-color: gray;
+}
+
+.grid-cell.hit {
+  background-color: green;
+}
+
+.grid-cell.miss {
+  background-color: red;
+}
