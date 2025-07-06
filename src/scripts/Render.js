@@ -10,16 +10,6 @@ const Render = (() => {
   leftBoard.addEventListener("click", moveShip);
   rightBoard.addEventListener("click", attackBoard);
 
-  let gameRunning = false;
-
-  function startGame() {
-    gameRunning = true;
-  }
-
-  function endGame() {
-    gameRunning = false;
-  }
-
   function updatePlayerBoard(board) {
     const boardElement = renderBoard(board);
     leftBoard.innerHTML = boardElement.innerHTML;
