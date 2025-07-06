@@ -22,7 +22,7 @@ const Game = (() => {
   }
 
   function computerAttack() {
-    const coord = -computer.makeAtack();
+    const coord = computer.makeAtack();
     player.board.receiveAttack(coord);
     PubSub.emit("computerBoardChanged", computer.board.getBoard());
   }
