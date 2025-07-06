@@ -42,7 +42,7 @@ const Gameboard = (() => {
       const gridCell = board[x][y];
 
       if (gridCell == "hit" || gridCell == "miss") {
-        throw new Error("Coordiante already attacked!");
+        throw new Error("Coordinate already attacked!");
       } else if (gridCell) {
         gridCell.hit();
         board[x][y] = "hit";
