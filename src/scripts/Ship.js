@@ -32,6 +32,10 @@ class Ship {
     return this.#hits;
   }
 
+  set hits(value) {
+    this.#hits = value;
+  }
+
   get length() {
     return this.#length;
   }
