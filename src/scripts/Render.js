@@ -7,6 +7,9 @@ const Render = (() => {
   const leftBoard = document.querySelector("#left-board");
   const rightBoard = document.querySelector("#right-board");
 
+  leftBoard.addEventListener("click", moveShip);
+  rightBoard.addEventListener("click", attackBoard);
+
   let gameRunning = false;
 
   function startGame() {
@@ -19,24 +22,24 @@ const Render = (() => {
 
   function updatePlayerBoard(board) {
     const boardElement = renderBoard(board);
-    addPlayerEventListeners(boardElement);
     leftBoard.innerHTML = boardElement.innerHTML;
   }
 
   function updateComputerBoard(board) {
     const boardElement = renderBoard(board);
-    addComputerEventListeners(boardElement);
     rightBoard.innerHTML = boardElement.innerHTML;
   }
 
   function renderBoard(board) {
     const boardElement = document.createElement("div");
-    boardElement.classList += "board";
+    boardElement.classList += "grid";
 
-    for (const row of board) {
+    for (let i = 0; i < board.length; i++) {
       const rowElement = makeRow();
-      for (const cell of row) {
-        const element = makeCell(cell);
+      for (let j = 0; j < board[i].length; j++) {
+        const element = makeCell(board[i][j]);
+        element.dataset.x = i;
+        element.dataset.y = j
         rowElement.appendChild(element);
       }
       boardElement.appendChild(rowElement);
@@ -48,12 +51,12 @@ const Render = (() => {
   function makeRow() {
     const element = document.createElement("div");
     element.classList += "grid-row";
-    
+
     return element;
   }
 
   function makeCell(cell) {
-    const element = document.createElement("div");    
+    const element = document.createElement("div");
     element.classList += "grid-cell";
     if (cell) {
       element.classList += cell;
@@ -61,10 +64,9 @@ const Render = (() => {
     return element;
   }
 
-  function addPlayerEventListeners(board) {}
+  function moveShip(event) {}
 
-  function addComputerEventListeners(board) {}
+  function attackBoard(event) {}
 })();
 
 export default Render;
-
