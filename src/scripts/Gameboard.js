@@ -59,7 +59,23 @@ const Gameboard = (() => {
     }
 
     function getBoard() {
-      return JSON.stringify(board);
+      const boardClone = [];
+
+      for (const row of board) {
+        const rowClone = [];
+
+        for (const cell of row) {
+          if (typeof cell == "string") {
+            rowClone.push(cell.slice());
+          } else {
+            rowClone.push(null);
+          }
+        }
+
+        boardClone.push(rowClone);
+      }
+
+      return boardClone;
     }
 
     function canPlaceX(coord, length = 0) {
@@ -99,8 +115,11 @@ const Gameboard = (() => {
         const start = y - 1;
         const end = y + length + 2;
 
-        if ((x - 1 >= 0 && board[x-1][y]) || (x + 1 < BOARD_SIZE && board[x+1][y])) {
-            throw new Error("Ships cannot be placed close to others ships!");
+        if (
+          (x - 1 >= 0 && board[x - 1][y]) ||
+          (x + 1 < BOARD_SIZE && board[x + 1][y])
+        ) {
+          throw new Error("Ships cannot be placed close to others ships!");
         }
 
         for (
