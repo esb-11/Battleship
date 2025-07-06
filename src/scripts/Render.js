@@ -3,12 +3,28 @@ import PubSub from "./PubSub.js";
 const Render = (() => {
   PubSub.on("playerBoardChanged", updatePlayerBoard);
   PubSub.on("enemyBoardChanged", updateEnemyBoard);
+  PubSub.on("playerWon", endGame);
 
   const leftBoard = document.querySelector("#left-board");
   const rightBoard = document.querySelector("#right-board");
+  const startButton = document.querySelector(".start-game-button");
 
   leftBoard.addEventListener("click", moveShip);
   rightBoard.addEventListener("click", attackBoard);
+  startButton.addEventListener("click", startGame);
+
+  let gameRunning = false;
+
+  function startGame() {
+    if (gameRunning) return;
+    gameRunning = true;
+    PubSub.emit("gameStarted");
+  }
+
+  function endGame() {
+    gameRunning = false;
+    PubSub.emit("gameEnded");
+  }
 
   function updatePlayerBoard(board) {
     const boardElement = renderBoard(board);
@@ -57,6 +73,9 @@ const Render = (() => {
   function moveShip(event) {}
 
   function attackBoard(event) {
+    if (!gameRunning) {
+      return;
+    }
     const cell = event.target;
     const x = parseInt(cell.dataset.x);
     const y = parseInt(cell.dataset.y);

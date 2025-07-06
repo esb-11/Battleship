@@ -18,12 +18,18 @@ const Game = (() => {
     if (!Gameboard.isCoordValid(coord)) {
       return;
     }
+
     try {
       computer.board.receiveAttack(coord);
     } catch (error) {
       return;
     }
+
     PubSub.emit("enemyBoardChanged", computer.board.getBoard());
+
+    if (computer.board.isEmpty()) {
+      PubSub.emit("playerWon");
+    }
   }
 
   function computerAttack() {
@@ -32,7 +38,10 @@ const Game = (() => {
     PubSub.emit("playerBoardChanged", player.board.getBoard());
   }
 
-  function reset() {}
+  function reset() {
+    player.board.reset();
+    computer.board.reset();
+  }
 
   return { playerAttack, computerAttack, reset };
 })();

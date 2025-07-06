@@ -6,7 +6,7 @@ const Gameboard = (() => {
 
   function createBoard() {
     const ships = [];
-    const board = generateBoard();
+    let board = generateBoard();
 
     function placeX(ship, coord) {
       // Place a ship along the X axis (horizontally)
@@ -137,7 +137,11 @@ const Gameboard = (() => {
       }
     }
 
-    return { placeX, placeY, receiveAttack, isEmpty, getBoard };
+    function reset() {
+      board = generateBoard();
+    }
+
+    return { placeX, placeY, receiveAttack, isEmpty, getBoard, reset };
   }
 
   function generateBoard() {
