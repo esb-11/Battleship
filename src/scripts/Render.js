@@ -59,14 +59,19 @@ const Render = (() => {
     const element = document.createElement("div");
     element.classList += "grid-cell";
     if (cell) {
-      element.classList += cell;
+      element.classList.add(cell);
     }
     return element;
   }
 
   function moveShip(event) {}
 
-  function attackBoard(event) {}
+  function attackBoard(event) {
+    const cell = event.target;
+    const x = parseInt(cell.dataset.x);
+    const y = parseInt(cell.dataset.y);
+    PubSub.emit("computerBoardAttacked", [x, y]);
+  }
 })();
 
 export default Render;
