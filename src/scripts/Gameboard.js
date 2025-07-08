@@ -1,4 +1,5 @@
 // Gameboard consists of a 10 X 10 grid
+// Ships cannot overlap
 // Ships cannot be placed near another ship
 
 const Gameboard = (() => {
@@ -7,6 +8,7 @@ const Gameboard = (() => {
   function createBoard() {
     const ships = [];
     let board = generateBoard();
+    let attacks = {};
 
     function placeX(ship, coord) {
       // Place a ship along the X axis (horizontally)
@@ -41,13 +43,13 @@ const Gameboard = (() => {
       const [x, y] = coord;
       const gridCell = board[x][y];
 
-      if (gridCell == "hit" || gridCell == "miss") {
+      if (attacks[coord]) {
         throw new Error("Coordinate already attacked!");
       } else if (gridCell) {
         gridCell.hit();
-        board[x][y] = "hit";
+        attacks[coord] = "hit";
       } else {
-        board[x][y] = "miss";
+        attacks[coord] = "miss";
       }
     }
 
@@ -61,17 +63,12 @@ const Gameboard = (() => {
     function getBoard() {
       const boardClone = [];
 
-      for (const row of board) {
+      for (let i = 0; i < board.length; i++) {
         const rowClone = [];
-
-        for (const cell of row) {
-          if (typeof cell == "string") {
-            rowClone.push(cell.slice());
-          } else {
-            rowClone.push(null);
-          }
+        for (let j = 0; j < board[i].length; j++) {
+          const coord = [i, j];
+          rowClone.push(attacks[coord] ? attacks[coord] : null);
         }
-
         boardClone.push(rowClone);
       }
 
@@ -138,7 +135,8 @@ const Gameboard = (() => {
     }
 
     function reset() {
-      board = generateBoard();
+      ships.forEach((ship) => (ship.hits = 0));
+      attacks = {};
     }
 
     return { placeX, placeY, receiveAttack, isEmpty, getBoard, reset };

@@ -18,19 +18,11 @@ const Player = (() => {
       return name.slice();
     }
 
-    return { getName, board };
-  }
-
-  function createCPU() {
-    const name = "Computer";
-    const board = Gameboard.createBoard();
-    fillBoard(board);
-    
-    function getName() {
-      return name.slice();
+    function reset() {
+      board.reset();
     }
-    
-    return { getName, board };
+
+    return { getName, board, reset };
   }
 
   function fillBoard(board) {
@@ -41,7 +33,7 @@ const Player = (() => {
     });
   }
 
-  return { createPlayer, createCPU };
+  return { createPlayer };
 })();
 
 export default Player;
