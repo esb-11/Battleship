@@ -75,6 +75,27 @@ const Gameboard = (() => {
       return boardClone;
     }
 
+    function revealBoard() {
+      const boardClone = [];
+
+      for (let i = 0; i < board.length; i++) {
+        const rowClone = [];
+        for (let j = 0; j < board[i].length; j++) {
+          const coord = [i, j];
+          if (attacks[coord]) {
+            rowClone.push(attacks[coord]);
+          } else if (board[i][j]) {
+            rowClone.push("ship");
+          } else {
+            rowClone.push(null);
+          }
+        }
+        boardClone.push(rowClone);
+      }
+
+      return boardClone;
+    }
+
     function canPlaceX(coord, length = 0) {
       const [x, y] = coord;
 
@@ -139,7 +160,7 @@ const Gameboard = (() => {
       attacks = {};
     }
 
-    return { placeX, placeY, receiveAttack, isEmpty, getBoard, reset };
+    return { placeX, placeY, receiveAttack, isEmpty, getBoard, reset, revealBoard };
   }
 
   function generateBoard() {

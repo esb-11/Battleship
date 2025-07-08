@@ -9,7 +9,7 @@ const Game = (() => {
   const computer = Player.createPlayer();
 
   function init() {
-    PubSub.emit("playerBoardChanged", player.board.getBoard());
+    PubSub.emit("playerBoardChanged", player.board.revealBoard());
     PubSub.emit("enemyBoardChanged", computer.board.getBoard());
     PubSub.on("enemyBoardAttacked", playerAttack);
     PubSub.on("gameStarted", reset);
@@ -36,13 +36,13 @@ const Game = (() => {
   function computerAttack() {
     const coord = computer.makeAtack();
     player.board.receiveAttack(coord);
-    PubSub.emit("playerBoardChanged", player.board.getBoard());
+    PubSub.emit("playerBoardChanged", player.board.revealBoard());
   }
 
   function reset() {
     player.reset();
     computer.reset();
-    PubSub.emit("playerBoardChanged", player.board.getBoard());
+    PubSub.emit("playerBoardChanged", player.board.revealBoard());
     PubSub.emit("enemyBoardChanged", computer.board.getBoard());
   }
 
