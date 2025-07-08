@@ -31,10 +31,17 @@ const Game = (() => {
     if (computer.board.isEmpty()) {
       PubSub.emit("playerWon");
     }
+
+    computerAttack();
   }
 
   function computerAttack() {
-    const coord = computer.makeAtack();
+    let coord = Player.randomAttack();
+
+    while (!player.board.canAttack(coord)) {
+      coord = Player.randomAttack();
+    }
+
     player.board.receiveAttack(coord);
     PubSub.emit("playerBoardChanged", player.board.revealBoard());
   }

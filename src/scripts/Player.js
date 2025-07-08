@@ -21,7 +21,6 @@ const Player = (() => {
     function reset() {
       board.reset();
     }
-
     return { getName, board, reset };
   }
 
@@ -33,7 +32,13 @@ const Player = (() => {
     });
   }
 
-  return { createPlayer };
+  function randomAttack() {
+    const x = parseInt(Math.random(10) * 10);
+    const y = parseInt(Math.random(10) * 10);
+    return [x, y];
+  }
+
+  return { createPlayer, randomAttack };
 })();
 
 export default Player;

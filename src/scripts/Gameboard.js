@@ -160,7 +160,11 @@ const Gameboard = (() => {
       attacks = {};
     }
 
-    return { placeX, placeY, receiveAttack, isEmpty, getBoard, reset, revealBoard };
+    function canAttack(coord) {
+      return !attacks[coord];
+    }
+
+    return { placeX, placeY, receiveAttack, isEmpty, getBoard, reset, revealBoard, canAttack };
   }
 
   function generateBoard() {
