@@ -42,6 +42,8 @@ const Game = (() => {
   function reset() {
     player.reset();
     computer.reset();
+    PubSub.emit("playerBoardChanged", player.board.getBoard());
+    PubSub.emit("enemyBoardChanged", computer.board.getBoard());
   }
 
   return { playerAttack, computerAttack, reset };
