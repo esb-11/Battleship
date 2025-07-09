@@ -1,3 +1,4 @@
+import Gameboard from "./Gameboard.js";
 import PubSub from "./PubSub.js";
 
 const Render = (() => {
@@ -10,11 +11,11 @@ const Render = (() => {
   const rightBoard = document.querySelector("#right-board");
   const startButton = document.querySelector(".start-game-button");
 
-  leftBoard.addEventListener("click", moveShip);
   rightBoard.addEventListener("click", attackBoard);
   startButton.addEventListener("click", startGame);
 
-  let gameRunning = false;
+  let gameRunning;
+  let playerBoard;
 
   function startGame() {
     if (gameRunning) return;
@@ -30,6 +31,7 @@ const Render = (() => {
   function updatePlayerBoard(board) {
     const boardElement = renderBoard(board);
     leftBoard.innerHTML = boardElement.innerHTML;
+    playerBoard = board;
   }
 
   function updateEnemyBoard(board) {
@@ -46,7 +48,7 @@ const Render = (() => {
       for (let j = 0; j < board[i].length; j++) {
         const element = makeCell(board[i][j]);
         element.dataset.x = i;
-        element.dataset.y = j
+        element.dataset.y = j;
         rowElement.appendChild(element);
       }
       boardElement.appendChild(rowElement);
@@ -71,16 +73,20 @@ const Render = (() => {
     return element;
   }
 
-  function moveShip(event) {}
+  function getCoordinates(element) {
+    const data = element.dataset;
+    const x = parseInt(data.x);
+    const y = parseInt(data.y);
+    const coord = [x, y];
+    return coord;
+  }
 
   function attackBoard(event) {
     if (!gameRunning) {
       return;
     }
-    const cell = event.target;
-    const x = parseInt(cell.dataset.x);
-    const y = parseInt(cell.dataset.y);
-    PubSub.emit("enemyBoardAttacked", [x, y]);
+    const coord = getCoordinates(event.target);
+    PubSub.emit("enemyBoardAttacked", coord);
   }
 })();
 

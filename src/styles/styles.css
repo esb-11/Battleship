@@ -73,6 +73,12 @@ body {
   border: 2px solid rgb(0, 0, 200);
 }
 
+.grid-cell.selected,
+.grid-cell.selected:hover {
+  background-color: rgb(200, 200, 255);
+  border: 2px solid rgb(100, 100, 200);
+}
+
 .start-game-button {
   font-size: 24px;
 }
