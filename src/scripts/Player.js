@@ -32,13 +32,17 @@ const Player = (() => {
     });
   }
 
-  function randomAttack() {
+  function randomCoordinate() {
     const x = parseInt(Math.random(10) * 10);
     const y = parseInt(Math.random(10) * 10);
     return [x, y];
   }
 
-  return { createPlayer, randomAttack };
+  function randomShipPosition(length, board) {
+
+  }
+
+  return { createPlayer, randomCoordinate };
 })();
 
 export default Player;

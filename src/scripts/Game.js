@@ -36,10 +36,10 @@ const Game = (() => {
   }
 
   function computerAttack() {
-    let coord = Player.randomAttack();
+    let coord = Player.randomCoordinate();
 
     while (!player.board.canAttack(coord)) {
-      coord = Player.randomAttack();
+      coord = Player.randomCoordinate();
     }
 
     player.board.receiveAttack(coord);
