@@ -12,7 +12,9 @@ const Gameboard = (() => {
 
     function placeX(ship, coord) {
       // Place a ship along the X axis (horizontally)
-      canPlaceX(coord, ship.length);
+      if (!canPlaceX(coord, ship.length)) {
+        return;
+      }
       const [x, y] = coord;
 
       for (let i = 0; i < ship.length; i++) {
@@ -24,7 +26,9 @@ const Gameboard = (() => {
 
     function placeY(ship, coord) {
       // Place a ship along the Y axis (vertically)
-      canPlaceY(coord, ship.length);
+      if (!canPlaceY(coord, ship.length)) {
+        return;
+      }
 
       const [x, y] = coord;
 
@@ -100,59 +104,50 @@ const Gameboard = (() => {
       const [x, y] = coord;
 
       if (!isCoordValid(coord)) {
-        throw new Error("Invalid coordinate!");
+        return false;
       } else if (board[x][y]) {
-        throw new Error("Coordinates are not empty!");
+        return false;
       } else {
-        const start = x - 1;
-        const end = x + length + 2;
+        const start = y - 1 < 0 ? 0 : y - 1;
+        const end = y + length + 1 > BOARD_SIZE ? BOARD_SIZE : y + length + 1;
 
-        for (
-          let i = start < 0 ? 0 : start;
-          i < (end > BOARD_SIZE ? BOARD_SIZE : end);
-          i++
-        ) {
+        for (let i = start; i < end; i++) {
           if (
             (x - 1 >= 0 && board[x - 1][i]) ||
-            (x + 1 < BOARD_SIZE && board[x + 1][i])
+            (x + 1 < BOARD_SIZE && board[x + 1][i]) ||
+            board[x][i]
           ) {
-            throw new Error("Ships cannot be placed close to others ships!");
+            return false;
           }
         }
       }
+
+      return true;
     }
 
-    function canPlaceY(coord, length) {
+    function canPlaceY(coord, length = 0) {
       const [x, y] = coord;
 
       if (!isCoordValid(coord)) {
-        throw new Error("Invalid coordinate!");
+        return false;
       } else if (board[x][y]) {
-        throw new Error("Coordinates are not empty!");
+        return false;
       } else {
-        const start = y - 1;
-        const end = y + length + 2;
+        const start = x - 1 < 0 ? 0 : x - 1;
+        const end = x + length + 1 > BOARD_SIZE ? BOARD_SIZE : x + length + 1;
 
-        if (
-          (x - 1 >= 0 && board[x - 1][y]) ||
-          (x + 1 < BOARD_SIZE && board[x + 1][y])
-        ) {
-          throw new Error("Ships cannot be placed close to others ships!");
-        }
-
-        for (
-          let i = start < 0 ? 0 : start;
-          i < (end > BOARD_SIZE ? BOARD_SIZE : end);
-          i++
-        ) {
+        for (let i = start; i < end; i++) {
           if (
             (y - 1 >= 0 && board[i][y - 1]) ||
-            (y + 1 < BOARD_SIZE && board[i][y + 1])
+            (y + 1 < BOARD_SIZE && board[i][y + 1]) ||
+            board[i][y]
           ) {
-            throw new Error("Ships cannot be placed close to others ships!");
+            return false;
           }
         }
       }
+
+      return true;
     }
 
     function reset() {
@@ -164,7 +159,62 @@ const Gameboard = (() => {
       return !attacks[coord];
     }
 
-    return { placeX, placeY, receiveAttack, isEmpty, getBoard, reset, revealBoard, canAttack };
+    function randomPlace(ship) {
+      const direction = Math.floor(Math.random() * 2);
+      if (direction === 1) {
+        const coord = randomX(ship.length);
+        placeX(ship, coord);
+      } else {
+        const coord = randomY(ship.length);
+        placeY(ship, coord);
+      }
+    }
+
+    function randomX(length = 1) {
+      let x = Math.floor(Math.random() * BOARD_SIZE);
+      const sizeLimit = BOARD_SIZE - length;
+
+      for (let i = 0; i < BOARD_SIZE - length + 1; i++) {
+        let y = Math.floor(Math.random() * sizeLimit);
+        for (let j = 0; j < sizeLimit; j++) {
+          const coord = [x, y];
+          if (canPlaceX(coord, length)) {
+            return coord;
+          }
+          y = y + 1 >= sizeLimit ? 0 : y + 1;
+        }
+        x = x + 1 >= BOARD_SIZE ? 0 : x + 1;
+      }
+    }
+
+    function randomY(length = 1) {
+      let y = Math.floor(Math.random() * BOARD_SIZE);
+      const sizeLimit = BOARD_SIZE - length;
+
+      for (let i = 0; i < BOARD_SIZE - length + 1; i++) {
+        let x = Math.floor(Math.random() * sizeLimit);
+        for (let j = 0; j < sizeLimit; j++) {
+          const coord = [x, y];
+          if (canPlaceY(coord, length)) {
+            return coord;
+          }
+          x = x + 1 >= sizeLimit ? 0 : x + 1;
+        }
+        y = y + 1 >= BOARD_SIZE ? 0 : y + 1;
+      }      
+    }
+
+    return {
+      placeX,
+      placeY,
+      receiveAttack,
+      isEmpty,
+      getBoard,
+      reset,
+      revealBoard,
+      canAttack,
+      randomPlace,
+    };
   }
 
   function generateBoard() {
@@ -184,15 +234,21 @@ const Gameboard = (() => {
     return board;
   }
 
-  function isCoordValid(coord, length = 1) {
+  function isCoordValid(coord) {
     const [x, y] = coord;
 
     return (
-      x + length <= BOARD_SIZE && y + length <= BOARD_SIZE && x >= 0 && y >= 0
+      x < BOARD_SIZE && y < BOARD_SIZE && x >= 0 && y >= 0
     );
   }
 
-  return { createBoard, isCoordValid };
+  function randomCoordinate() {
+    const x = parseInt(Math.random() * 10);
+    const y = parseInt(Math.random() * 10);
+    return [x, y];
+  }
+
+  return { createBoard, isCoordValid, BOARD_SIZE, randomCoordinate };
 })();
 
 export default Gameboard;

@@ -25,24 +25,13 @@ const Player = (() => {
   }
 
   function fillBoard(board) {
-    let index = 0;
-    STARTING_FLEET.forEach((ship) => {
-      board.placeX(new Ship(ship), [index, 0]);
-      index += 2;
+    STARTING_FLEET.forEach((shipType) => {
+      const ship = new Ship(shipType);      
+      board.randomPlace(ship);
     });
   }
 
-  function randomCoordinate() {
-    const x = parseInt(Math.random(10) * 10);
-    const y = parseInt(Math.random(10) * 10);
-    return [x, y];
-  }
-
-  function randomShipPosition(length, board) {
-
-  }
-
-  return { createPlayer, randomCoordinate };
+  return { createPlayer };
 })();
 
 export default Player;
