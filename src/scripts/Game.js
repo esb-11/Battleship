@@ -44,6 +44,10 @@ const Game = (() => {
 
     player.board.receiveAttack(coord);
     PubSub.emit("playerBoardChanged", player.board.revealBoard());
+
+    if (player.board.isEmpty()) {
+      PubSub.emit("computerWon");
+    }
   }
 
   function reset() {

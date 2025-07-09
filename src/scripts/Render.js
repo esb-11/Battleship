@@ -4,6 +4,7 @@ const Render = (() => {
   PubSub.on("playerBoardChanged", updatePlayerBoard);
   PubSub.on("enemyBoardChanged", updateEnemyBoard);
   PubSub.on("playerWon", endGame);
+  PubSub.on("computerWon", endGame);
 
   const leftBoard = document.querySelector("#left-board");
   const rightBoard = document.querySelector("#right-board");
